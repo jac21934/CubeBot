@@ -17,13 +17,13 @@ client = discord.Client()
 
 # This give it that nice code block feel. Could also 
 # put some kind of CSS parsing here, since discord supports that
-def BuildMessage(inputString):
+def BuildMessage(inputString):  
     return '```' + inputString + '```'
 
 # Scrape sentences from timecube website
 def getTimecubeSentences():
 
-  page = requests.get('https://timecube.2enp.com/)
+  page = requests.get('https://timecube.2enp.com/')
   tree = html.fromstring(page.content)
 
   # The meat of timecube.2enp.com lives in the 'Section1' div
@@ -36,7 +36,7 @@ def getTimecubeSentences():
         text.append(e.text)
 
   # strip whitespace and \r\n
-  stripped = [x.strip().replace('\r','').replace('\n','') for x in text]
+  stripped = [x.strip().replace('\r','').replace('\n',' ') for x in text]
 
   # remove empty strings
   stripped = list(filter(('').__ne__, stripped))
@@ -99,7 +99,7 @@ async def on_message(message):
   
     elif(message.author.id != client.user.id): # <- if not here it will respond to itself
         if any(trig in message.content.lower() for trig in TriggerPhrases):
-            response = BuildMessage(random.choice(cube_exerpts))
+            response = BuildMessage(random.choice(cube_excerpts))
             await message.channel.send(response)
 
 
