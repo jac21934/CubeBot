@@ -163,8 +163,12 @@ async def on_message(message):
             await message.channel.send(response)
             await client.logout()
     if("link me" in message.content.lower()):
-            response = "https://timecube.2enp.com/"
-            await message.channel.send(response) 
+        response = "https://timecube.2enp.com/"
+        await message.channel.send(response) 
+    
+    if("source" in message.content.lower()):
+        response = "https://github.com/jac21934/CubeBot"
+        await message.channel.send(response) 
 
   
     elif(message.author.id != client.user.id): # <- if not here it will respond to itself
