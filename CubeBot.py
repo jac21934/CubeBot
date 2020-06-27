@@ -51,7 +51,7 @@ def getTimecubeSentences():
 
   return sentences
 
-cube_excerpts = getTimecubeSentences('https://timecube.2enp.com/')
+cube_excerpts = getTimecubeSentences()
 
 # trigger phrases to respond to
 TriggerPhrases = [
