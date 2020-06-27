@@ -9,16 +9,15 @@ from lxml import html
 import requests
 import nltk.data
 
+import FormatText as ft 
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
 client = discord.Client()
 
-# This give it that nice code block feel. Could also 
-# put some kind of CSS parsing here, since discord supports that
-def BuildMessage(inputString):  
-    return '```' + inputString + '```'
+
 
 # Scrape sentences from timecube website
 def getTimecubeSentences():
@@ -75,9 +74,9 @@ TriggerPhrases = [
 # of cubebot is to be a funny overeager proselytizer of TimeCube, and
 # not respond to commands, so I'm making it only proc on mentions
 async def ProcessCommand(message):
-    response = BuildMessage("Hello")
+    response = ft.BuildMessage("Hello")
     if("shutdown" in message.content.lower()):
-            response = BuildMessage("Shutting down.") 
+            response = ft.BuildMessage("Shutting down.") 
 
     if("link" in message.content.lower()): # could do this smarter. Will react to things like "blink"
         response = "https://timecube.2enp.com/"
@@ -86,7 +85,7 @@ async def ProcessCommand(message):
         response = "https://github.com/jac21934/CubeBot"
     
     await message.channel.send(response)
-    if(response == BuildMessage("Shutting down.")): 
+    if(response == ft.BuildMessage("Shutting down.")): 
         await client.logout()
 
 
@@ -99,7 +98,7 @@ async def on_message(message):
   
     elif(message.author.id != client.user.id): # <- if not here it will respond to itself
         if any(trig in message.content.lower() for trig in TriggerPhrases):
-            response = BuildMessage(random.choice(cube_excerpts))
+            response = ft.BuildMessage(random.choice(cube_excerpts))
             await message.channel.send(response)
 
 
