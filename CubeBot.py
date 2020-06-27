@@ -12,7 +12,7 @@ GUILD = os.getenv('DISCORD_GUILD')
 client = discord.Client()
 
 # This give it that nice code block feel. Could also 
-# put some king of CSS parsing here, since discord supports that
+# put some kind of CSS parsing here, since discord supports that
 def BuildMessage(inputString):
     return '```' + inputString + '```'
 
@@ -148,7 +148,10 @@ TriggerPhrases = [
 ]
 
 
-
+# this handles all the commands. I could do this with a character prefix
+# but I don't really want this to be too accessible. The primary purpose
+# of cubebot is to be a funny overeager proselytizer of TimeCube, and
+# not respond to commands, so I'm making it only proc on mentions
 async def ProcessCommand(message):
     response = BuildMessage("Hello")
     if("shutdown" in message.content.lower()):
@@ -163,8 +166,6 @@ async def ProcessCommand(message):
     await message.channel.send(response)
     if(response == BuildMessage("Shutting down.")): 
         await client.logout()
-
-
 
 
 
