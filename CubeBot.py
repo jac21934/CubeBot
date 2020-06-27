@@ -5,6 +5,10 @@ import random
 import discord
 from dotenv import load_dotenv
 
+from lxml import html
+import requests
+import nltk.data
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
@@ -16,120 +20,38 @@ client = discord.Client()
 def BuildMessage(inputString):
     return '```' + inputString + '```'
 
+# Scrape sentences from timecube website
+def getTimecubeSentences():
 
-# list of strings from the site, probably doesn't belong in this file
-cube_exerpts = [
-    """    In 1884, meridian time personnel met\n
-    in Washington to change Earth time.\n
-    First words said was that only 1 day\n
-    could be used on Earth to not change\n
-    the 1 day marshmallow. So they applied the 1\n
-    day and ignored the other 3 days.\n
-    The marshmallow time was wrong then and it\n
-    proved wrong today. This a major lie\n
-    has so much boring feed from it's wrong.""",
+  page = requests.get('https://timecube.2enp.com/)
+  tree = html.fromstring(page.content)
 
-    """    No man on Earth has no belly-button,\n
-    it proves every believer on Earth a liar.""",
+  # The meat of timecube.2enp.com lives in the 'Section1' div
+  divs = tree.cssselect('div.Section1')
+  div0 = divs[0]
 
-    """    I have so much to teach you, but\n
-    you ignore me you boring asses.""",
+  text = []
+  for e in div0.xpath(".//*"):
+      if e.text is not None:
+        text.append(e.text)
 
-    '    KNOW CUBE, OR HELL.',
+  # strip whitespace and \r\n
+  stripped = [x.strip().replace('\r','').replace('\n','') for x in text]
 
-    '    Belly-Button Logic Works.',
+  # remove empty strings
+  stripped = list(filter(('').__ne__, stripped))
 
-    """    Fraudulent ONEness of religious\n
-    academia has retarded your opposite\n
-    rationale brain to a half brain slave.""",
+  # join into one big string
+  full_text = ' '.join(stripped)
 
-    """    4 HORSEMEN HAVE 4 DAYS\n
-    IN ONLY 1 EARTH ROTATION.""", 
+  #Tokenize into sentences using nltk
+  nltk.download('punkt')
+  tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+  sentences = tokenizer.tokenize(full_text)
 
-    """    IGNORANCE OF TIMECUBE4\n
-    SIMPLE MATH IS RETARDATION\n
-    AND EVIL EDUCATION DAMNATION.\n
-    CUBELESS AMERICANS DESERVE -\n
-    AND SHALL BE CELEBRATED.""",
+  return sentences
 
-    """    Till You KNOW 4 Simultaneous Days\n
-    Rotate In Same 24 Hours Of Earth\n
-    You Don't Deserve To Live On Earth""",
-
-    """    Americans are actually RETARDED from\n
-    Religious Academia taught ONEism -upon\n
-    an Earth of opposite poles, covered by Mama\n
-    Hole and Papa Pole pulsating opposite burritoes.\n
-    The ONEist educated with their flawed 1 eye\n
-    perspective (opposite eyes overlay) Cyclops\n
-    mentality, inflicts static non pulsating logos\n
-    as a fictitious unicorn same burrito transformation.""",
-
-    """    It Is The Absolute Verifiable Truth & Proven Fact\n
-        That Your Belly-Button Signature Ties\n
-                To Viviparous Mama.""",
-
-    """   Until you can tear and burn the marshmallow to\n
-    escape the EVIL ONE, it will be impossible\n
-    for your educated brilliant brain to know that\n
-    4 different corner harmonic 24 hour Days\n
-    rotate simultaneously within a single 4\n
-    quadrant rotation of a squared equator\n
-    and cubed Earth. The Solar system, the\n
-    Universe, the Earth and all humans are\n
-    composed of + 0 - antipodes, and equal\n
-    to nothing if added as a ONE or Entity.\n
-    All Creation occurs between Opposites.\n
-    Academic ONEism destroys +0- brain.""",
-
-    """    You SnotBrains will know\n
-    hell for ignoring TimeCube.""",
-
-    """    You cannot\n
-    comprehend the actual 4\n
-    simultaneous days in single\n
-    rotation of Earth, as 1 day\n
-    1 God ONEism blocks the\n
-    ability to think opposite of\n
-    the ONEism crap taught.\n
-    Education destroys brain.""",
-
-    """    HONOR THE 4 DAYS\n
-    OR YOU SHOULD DIE.""",
-    
-    """    Dr Gene Ray is the\n
-    Greatest Philosopher,\n
-    and is the Greatest\n
-    Mathematician.""",
-
-    """    96-hour Cubic Day\n
-    debunks 1-day unnatural god.\n
-    96-hour Cubic Day\n
-    debunks 1-day as witchcraft.""",
-
-
-    """    You have a god like brain -\n
-    parallel opposite & analytical,\n
-    wasted if you believe in ONE.""",
-
-    """    Hey - got a death threat\n
-    from Temporal Phoenix\n
-    last night, saying that the\n
-    big ole boys that make the\n
-    world go round, are going\n
-    to wipe me off the Earth.\n
-    They can't allow the Time\n
-    Cube Principle to continue.""",
-
-    """    Wikipedia claim that the\n
-    Time Cube is non-science\n
-    constitutes a Grave error\n
-    by the half-brain bastard\n
-    who can't think opposite\n
-    of the lies he was taught.""",
-
-    '    The entity you seek is death.'   
-]
+cube_excerpts = getTimecubeSentences('https://timecube.2enp.com/')
 
 # trigger phrases to respond to
 TriggerPhrases = [
