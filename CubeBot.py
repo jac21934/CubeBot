@@ -149,6 +149,20 @@ TriggerPhrases = [
 
 
 
+async def ProcessCommand(message):
+    response = BuildMessage("Hello")
+    if("shutdown" in message.content.lower()):
+            response = BuildMessage("Shutting down.") 
+
+    if("link" in message.content.lower()): # could do this smarter. Will react to things like "blink"
+        response = "https://timecube.2enp.com/"
+    
+    if("source" in message.content.lower()):
+        response = "https://github.com/jac21934/CubeBot"
+    
+    await message.channel.send(response)
+    if(response == BuildMessage("Shutting down.")): 
+        await client.logout()
 
 
 
@@ -158,18 +172,7 @@ TriggerPhrases = [
 async def on_message(message):
 
     if(client.user in message.mentions):
-        if("shutdown" in message.content.lower()):
-            response = BuildMessage("Shutting down.") 
-            await message.channel.send(response)
-            await client.logout()
-    if("link me" in message.content.lower()):
-        response = "https://timecube.2enp.com/"
-        await message.channel.send(response) 
-    
-    if("source" in message.content.lower()):
-        response = "https://github.com/jac21934/CubeBot"
-        await message.channel.send(response) 
-
+        await ProcessCommand(message)
   
     elif(message.author.id != client.user.id): # <- if not here it will respond to itself
         if any(trig in message.content.lower() for trig in TriggerPhrases):
